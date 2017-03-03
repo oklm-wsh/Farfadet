@@ -7,3 +7,4 @@ sudo: true
 env:
   matrix:
   - PACKAGE="farfadet" OCAML_VERSION=4.02 TESTS=true
+    PINS="faraday:https://github.com/inhabitedtype/faraday.git"
