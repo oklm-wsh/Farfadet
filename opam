@@ -1,0 +1,23 @@
+opam-version: "1.2"
+name:         "farfadet"
+version:      "dev"
+maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage:     "https://github.com/oklm-wsh/Farfadet"
+bug-reports:  "https://github.com/oklm-wsh/Farfadet/issues"
+dev-repo:     "https://github.com/oklm-wsh/Farfadet.git"
+license:      "MIT"
+
+build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" pinned ]
+
+build-test: [ [ "ocaml" "pkg/pkg.ml" "build" "--pinned" pinned "--tests" "true" ]
+              [ "ocaml" "pkg/pkg.ml" "test" ] ]
+
+depends: [
+  "ocamlbuild"     {build}
+  "ocamlfind"      {build}
+  "topkg"          {build}
+  "faraday"
+]
+
+available: [ocaml-version >= "4.02.0"]

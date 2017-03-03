@@ -1,0 +1,7 @@
+description = "Printf-like for Faraday library"
+version = "0.1"
+requires = "faraday"
+archive(byte) = "farfadet.cma"
+archive(native) = "farfadet.cmxa"
+plugin(byte) = "farfadet.cma"
+plugin(native) = "farfadet.cmxs"

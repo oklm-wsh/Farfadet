@@ -1,0 +1,5 @@
+_build
+doc/*.html
+*.native
+*.byte
+*.tar.gz
