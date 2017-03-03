@@ -44,8 +44,10 @@ type safe way. This is an example:
 open Farfadet
 open Farfadet.Infix
 
+let sp = Const.char ' '
+
 let write_user enc user =
-  let fmt = string **! sp ** string **! ... yield in
+  let fmt = string **! sp ** string **! sp ** ... yield in
   let fmt = finalize (make user) in
 
   eval enc fmt user.name user.email ...
