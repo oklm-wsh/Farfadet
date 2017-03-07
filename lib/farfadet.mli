@@ -1,21 +1,73 @@
-module Blitter :
-sig
-  type 'a t =
-    { blit   : 'a -> int -> Faraday.bigstring -> int -> int -> unit
-    ; length : 'a -> int }
-end
+
+type 'a t = Faraday.t -> 'a -> unit
+
+val beint16 : int    t
+val beint32 : int32  t
+val beint64 : int64  t
+val leint16 : int    t
+val leint32 : int32  t
+val leint64 : int64  t
+
+val string  : string t
+val bytes   : Bytes.t t
+val bigstring  : Faraday.bigstring t
+
+val bool    : bool   t
+val char    : char   t
+
+val seq     : 'a t -> 'b t -> ('a * 'b) t
+val option  : 'a t -> 'a option t
+val list    : ?sep:('a t * 'a) -> 'b t -> 'b list t
+
+val comap   : 'a t -> ('b -> 'a) -> 'b t
+
+(** Operations on slices *)
+
+type 'a sub = Faraday.t -> ?off:int -> ?len:int -> 'a -> unit
+
+val substring : string sub
+val subbytes : bytes sub
+val subbigstring : Faraday.bigstring sub
+
+val whole : 'a sub -> 'a t
+
+type vec = { off : int option ; len : int option }
+val sub : 'a sub -> (vec * 'a) t
+
+(** Formatters *)
 
 type ('ty, 'v) order
-
-type ('ty, 'v) t =
-  | [] : ('v, 'v) t
+type ('ty, 'v) fmt =
+  | [] : ('v, 'v) fmt
   | (::) :
        ('ty, 'v) order
-     * ( 'v, 'r) t
-    -> ('ty, 'r) t
+     * ( 'v, 'r) fmt
+    -> ('ty, 'r) fmt
 
-type vec = { off : int
-           ; len : int option }
+val atom : 'a t -> ('a -> 'v, 'v) order
+val subatom : 'a sub -> (vec -> 'a -> 'v, 'v) order
+val (!!) : 'a t -> ('a -> 'v, 'v) order
+val (!^) : 'a sub -> (vec -> 'a -> 'v, 'v) order
+
+val concat : ('ty, 'v) fmt -> ( 'v, 'r) fmt -> ('ty, 'r) fmt
+val yield : ('v, 'v) order
+val flush : (unit -> unit) -> ('v, 'v) order
+
+val keval :
+     Faraday.t
+  -> ('ty, 'v) fmt
+  -> (Faraday.t -> 'v)
+  -> 'ty
+
+val eval  :
+     Faraday.t
+  -> ('ty, unit) fmt
+  -> 'ty
+
+(** Constants *)
+
+val const : 'a t -> 'a -> ('a, 'a) order
+val ($) : 'a t -> 'a -> ('a, 'a) order
 
 module Const :
 sig
@@ -31,32 +83,3 @@ sig
   val bytes     : (vec -> Bytes.t -> 'a, 'a) order
   val bigstring : (vec -> Faraday.bigstring -> 'a, 'a) order
 end
-
-type _ atom
-
-val beint16 : int    atom
-val beint32 : int32  atom
-val beint64 : int64  atom
-val leint16 : int    atom
-val leint32 : int32  atom
-val leint64 : int64  atom
-val string  : string atom
-val seq     : 'a atom -> 'b atom -> ('a * 'b) atom
-val bool    : bool   atom
-val char    : char   atom
-val option  : 'a atom -> 'a option atom
-(* val list    : 's const option -> 'a atom -> 'a list atom *)
-
-val concat : ('ty, 'v) t -> ( 'v, 'r) t -> ('ty, 'r) t
-val yield : ('v, 'v) order
-
-val keval :
-     Faraday.t
-  -> ('ty, 'v) t
-  -> (Faraday.t -> 'v)
-  -> 'ty
-
-val eval  :
-     Faraday.t
-  -> ('ty, unit) t
-  -> 'ty
