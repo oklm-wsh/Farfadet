@@ -8,17 +8,16 @@ end
 type vec = { off : int
            ; len : int option }
 
-type (_, _) prelist =
-  | Empty : ('a, 'a) prelist
-  | Cons  :
-        'a Blitter.t * ('h, 'r) prelist
-    -> ('a Blitter.t -> 'h, 'r) prelist
-
 type 'a const =
-  | ConstChar      : char -> char const
-  | ConstString    : vec * String.t -> String.t const
-  | ConstBytes     : vec * Bytes.t -> Bytes.t const
-  | ConstBigstring : vec * Faraday.bigstring -> Faraday.bigstring const
+  | Char      : char -> char const
+  | String    : vec * String.t -> String.t const
+  | Bytes     : vec * Bytes.t -> Bytes.t const
+  | Bigstring : vec * Faraday.bigstring -> Faraday.bigstring const
+
+type 'a schedule =
+  | String    : String.t schedule
+  | Bytes     : Bytes.t schedule
+  | Bigstring : Faraday.bigstring schedule
 
 type _ atom =
   | BEu16   : int    atom
@@ -34,6 +33,34 @@ type _ atom =
   | Opt     : 'a atom -> 'a option atom
   | List    : 'sep const option * 'a atom -> 'a list atom
 
+type ('ty, 'v) order =
+  | Yield     : ('v, 'v) order
+  | Const     :
+       'a const
+    -> ('v, 'v) order
+  | Direct    :
+       'a atom
+    -> ('a -> 'v, 'v) order
+  | Sched     :
+       'a schedule
+    -> (vec -> 'a -> 'v, 'v) order
+  | Blitter   :
+       'a atom * 'a Blitter.t
+    -> (vec option -> 'a -> 'v, 'v) order
+  | Flush     :
+       (unit -> unit)
+    -> ('v, 'v) order
+  | App       :
+       (Faraday.t -> 'a -> unit)
+    -> ('a -> 'v, 'v) order
+
+type ('ty, 'v) t =
+  | [] : ('v, 'v) t
+  | (::) :
+       ('ty, 'v) order
+     * ( 'v, 'r) t
+    -> ('ty, 'r) t
+
 let beint16       = BEu16
 let beint32       = BEu32
 let beint64       = BEu64
@@ -47,144 +74,41 @@ let seq x y       = Seq (x, y)
 let option x      = Opt x
 let list sep x    = List (sep, x)
 
-type 'a sched =
-  | SchedString    : String.t sched
-  | SchedBytes     : Bytes.t sched
-  | SchedBigstring : Faraday.bigstring sched
-
-module Schedule =
-struct
-  let string = SchedString
-  let bytes = SchedBytes
-  let bigstring = SchedBigstring
+module Const = struct
+  let char s = Const (Char s)
+  let string    ?(off = 0) ?len s = Const (String ({ off; len }, s))
+  let bytes     ?(off = 0) ?len s = Const (Bytes ({ off; len }, s))
+  let bigstring ?(off = 0) ?len s = Const (Bigstring ({ off; len }, s))
 end
 
-module Const =
-struct
-  let char s =
-    ConstChar s
-
-  let string    ?(off = 0) ?len s =
-    ConstString    ({ off; len }, s)
-  let bytes     ?(off = 0) ?len s =
-    ConstBytes     ({ off; len }, s)
-  let bigstring ?(off = 0) ?len s =
-    ConstBigstring ({ off; len }, s)
+module Sched = struct
+  let string = Sched String
+  let bytes = Sched Bytes
+  let bigstring = Sched Bigstring
 end
 
-type ('ty, 'v, 'cty, 'cv) list =
-  | Nil       : ('v, 'v, 'cv, 'cv) list
-  | Close     : (unit, unit, 'cv, 'cv) list
-  | Yield     : ('v, 'v, 'cv, 'cv) list
-  | Const     :
-       'a const
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, 'cty, 'cv) list
-  | Direct    :
-       'a atom
-    *  ('ty,       'v, 'cty, 'cv) list
-    -> ('a -> 'ty, 'v, 'cty, 'cv) list
-  | Sched     :
-       'a sched
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> (vec -> 'a -> 'ty, 'v, 'cty, 'cv) list
-  | Blitter   :
-       'a atom
-    *  ('ty,              'v,                 'cty, 'cv) list
-    -> (vec option -> 'a -> 'ty, 'v, 'a Blitter.t -> 'cty, 'cv) list
-  | Flush     :
-       (unit -> unit)
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, 'cty, 'cv) list
-  | App       :
-       (Faraday.t -> 'a -> unit)
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> ('a -> 'ty, 'v, 'cty, 'cv) list
-
-type ('ty, 'v, 'final, 'cty, 'cv) ty =
-  | Convertible :
-       ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, [ `NotF ], 'cty, 'cv) ty
-  | Finalized :
-       ('ty, 'v, 'cty, ('ty, 'v, [ `F ], 'cv, 'cv) ty) list
-    *           ('cty, ('ty, 'v, [ `F ], 'cv, 'cv) ty) prelist
-    -> ('ty, 'v, [ `F ], 'cv, 'cv) ty
-
-type ('ty, 'v, 'cty, 'cv) t =
-  ('ty, 'v, 'cty, 'cv, 'cv) ty
-  constraint 'cv = _ ty
+let yield = Yield
 
 let rec concat
-  : type ty v r cty cv cr.
-     (ty, v, cty, cv) list
-  -> ( v, r,  cv, cr) list
-  -> (ty, r, cty, cr) list
+  : type x v r. (x, v) t -> (v, r) t -> (x, r) t
   = fun l1 l2 -> match l1 with
-    | Nil -> l2
-    | Close -> l2
-    | Yield -> l2
-    | Const   (x, r) -> Const   (x, concat r l2)
-    | Direct  (x, r) -> Direct  (x, concat r l2)
-    | Sched   (x, r) -> Sched   (x, concat r l2)
-    | Blitter (x, r) -> Blitter (x, concat r l2)
-    | Flush   (f, r) -> Flush   (f, concat r l2)
-    | App     (f, r) -> App     (f, concat r l2)
+    | [] -> l2
+    | x::r -> x :: concat r l2
 
-let nil             = Nil
-let close           = Close
-let add_const   x r = Const   (x, r)
-let add_direct  x r = Direct  (x, r)
-let add_sched   x r = Sched   (x, r)
-let add_blitter x r = Blitter (x, r)
-let add_app     f r = App     (f, r)
-let yield           = Yield
-let flush f l       = Flush (f, l)
+let (^^) = concat
 
-module Infix =
-struct
-  let nil             = Nil
-  let close           = Close
-
-  let ( ** )  x r = add_const x r
-  let ( **! ) x r = add_direct x r
-  let ( **~ ) x r = add_sched x r
-  let ( **? ) x r = add_blitter x r
-  let ( **| ) f l = flush f l
-  let ( **= ) f r = add_app f r
-  let ( @@ )      = concat
-end
-
-(* XXX(dinosaure): clash between {!ty} and [type ty']. *)
-
-let rec finalize
-  : type ty' v cty. (ty', v, _, cty, (ty', v, _, _) t) ty -> cty
-  = fun (Convertible l) ->
-    finalize_list l @@ fun ll -> Finalized (l, ll)
-and finalize_list
-  : type i ty v cty cv.
-    (ty, v, cty, cv) list -> ((cty, cv) prelist -> cv) -> cty
-  = fun p k -> match p with
-    | Nil   -> k Empty
-    | Close -> k Empty
-    | Yield -> k Empty
-    | Const      (_, r) -> finalize_list r k
-    | Sched      (_, r) -> finalize_list r k
-    | Direct     (_, r) -> finalize_list r k
-    | Flush      (_, r) -> finalize_list r k
-    | App        (_, r) -> finalize_list r k
-    | Blitter    (_, r) ->
-      fun c -> finalize_list r (fun cl -> k (Cons (c, cl)))
+(** Output *)
 
 let write_const
   : type a. Faraday.t -> a const -> unit
   = fun encoder -> function
-    | ConstString (v, s)    ->
+    | String (v, s)    ->
       Faraday.write_string    encoder ~off:v.off ?len:v.len s
-    | ConstBytes  (v, s)    ->
+    | Bytes  (v, s)    ->
       Faraday.write_bytes     encoder ~off:v.off ?len:v.len s
-    | ConstBigstring (v, s) ->
+    | Bigstring (v, s) ->
       Faraday.write_bigstring encoder ~off:v.off ?len:v.len s
-    | ConstChar chr ->
+    | Char chr ->
       Faraday.write_char      encoder chr
 
 let rec write_atom
@@ -207,7 +131,7 @@ let rec write_atom
                | true  -> Faraday.write_char encoder '1'
                | false -> Faraday.write_char encoder '0')
     | List (sep, a) ->
-      let rec aux = function
+      let rec aux : _ list -> _ = function
         | [] -> ()
         | [ x ] -> write_atom encoder a x
         | x :: r ->
@@ -220,78 +144,64 @@ let rec write_atom
       function Some a -> write_atom encoder x a
              | None   -> ()
 
-let sched_const
-  : type a. Faraday.t -> a sched -> vec -> a -> unit
+let schedule_const
+  : type a. Faraday.t -> a schedule -> vec -> a -> unit
   = fun encoder -> function
-    | SchedString ->
+    | String ->
       fun v s -> Faraday.schedule_string    encoder ~off:v.off ?len:v.len s
-    | SchedBytes ->
+    | Bytes ->
       fun v s -> Faraday.schedule_bytes     encoder ~off:v.off ?len:v.len s
-    | SchedBigstring ->
+    | Bigstring ->
       fun v s -> Faraday.schedule_bigstring encoder ~off:v.off ?len:v.len s
 
-let rec eval_list
+let keval_order
   : type ty v cty cv.
-       Faraday.t
-    -> (ty, v, cty, cv) list
-    -> (cty, 'res) prelist
-    -> ((cv, 'res) prelist -> Faraday.t -> v)
+    Faraday.t
+    -> (ty, v) order
+    -> (Faraday.t -> v)
     -> ty
-  = fun encoder l cl k -> match l with
-    | Nil   ->
-      k cl encoder
-    | Close ->
-      Faraday.close encoder
+  = fun encoder o k -> match o with
     | Yield ->
       Faraday.yield encoder;
-      k cl encoder
-    | Const (x, r) ->
+      k encoder
+    | Const x ->
       write_const encoder x;
-      eval_list encoder r cl k
-    | Sched (x, r) ->
+      k encoder
+    | Sched x ->
       fun v s ->
-        sched_const encoder x v s;
-        eval_list encoder r cl k
-    | Direct (a, r) ->
+        schedule_const encoder x v s;
+        k encoder
+    | Direct a ->
       fun x ->
         write_atom encoder a x;
-        eval_list encoder r cl k
-    | Blitter (a, r) ->
-      let Cons (c, cl) = cl in
+        k encoder
+    | Blitter (a, b) ->
       fun vec x ->
         let off = match vec with Some { off; _ } -> Some off | None -> None in
         let len = match vec with Some { len; _ } -> len | None -> None in
-
         Faraday.write_gen
           encoder
-          ~blit:c.Blitter.blit
-          ~length:c.Blitter.length
+          ~blit:b.Blitter.blit
+          ~length:b.Blitter.length
           ?off ?len x;
-        eval_list encoder r cl k
-    | Flush (f, r) ->
+        k encoder
+    | Flush f ->
       Faraday.flush encoder f;
-      eval_list encoder r cl k
-    | App   (f, r) ->
+      k encoder
+    | App   f ->
       fun x ->
         f encoder x;
-        eval_list encoder r cl k
+        k encoder
 
-and keval_ty
-  :    Faraday.t
-    -> ('ty, 'v, 'cty, _ ty as 'res) list
-    -> ('c, 'res) prelist
-    -> (Faraday.t -> 'v) -> 'ty
-  = fun encoder l cl k ->
-    eval_list encoder l cl (fun Empty encoder -> k encoder)
-
-let keval
-  : type final. Faraday.t -> (_, _, final, _, _) ty -> _
-  = fun encoder fmt k ->
-    match fmt with
-    | Finalized (fmt, cl) -> keval_ty encoder fmt cl k
-    | Convertible fmt -> keval_ty encoder fmt Empty k
+let rec keval
+  : type ty v cty cv.
+       Faraday.t
+    -> (ty, v) t -> (Faraday.t -> v)
+    -> ty
+  = fun encoder l k -> match l with
+    | []   -> k encoder
+    | o::l ->
+      let k' encoder = keval encoder l k in
+      keval_order encoder o k'
 
 let eval encoder fmt = keval encoder fmt (fun x -> ())
-
-let make l : _ ty =
-  Convertible l

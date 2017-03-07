@@ -3,3 +3,5 @@ true: safe_string, bin_annot, debug
 
 <lib>: include
 <lib/*>: package(faraday)
+
+true: keep_locs
