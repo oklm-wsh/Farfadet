@@ -1,190 +1,85 @@
-module Blitter :
-sig
-  type 'a t =
-    { blit   : 'a -> int -> Faraday.bigstring -> int -> int -> unit
-    ; length : 'a -> int }
-end
 
-type vec =
-  { off : int
-  ; len : int option }
+type 'a t = Faraday.t -> 'a -> unit
 
-type 'a const =
-  | ConstChar      : char -> char const
+val beint16 : int    t
+val beint32 : int32  t
+val beint64 : int64  t
+val leint16 : int    t
+val leint32 : int32  t
+val leint64 : int64  t
 
-  | ConstString    : vec * String.t -> String.t const
-  | ConstBytes     : vec * Bytes.t -> Bytes.t const
-  | ConstBigstring : vec * Faraday.bigstring -> Faraday.bigstring const
+val string  : string t
+val bytes   : Bytes.t t
+val bigstring  : Faraday.bigstring t
 
-type 'a sched =
-  | SchedString    : String.t sched
-  | SchedBytes     : Bytes.t sched
-  | SchedBigstring : Faraday.bigstring sched
+val bool    : bool   t
+val char    : char   t
 
-type _ atom =
-  | BEu16  : int    atom
-  | BEu32  : int32  atom
-  | BEu64  : int64  atom
-  | LEu16  : int    atom
-  | LEu32  : int32  atom
-  | LEu64  : int64  atom
-  | String : string atom
-  | Bool   : bool   atom
-  | Char   : char   atom
-  | Seq    : 'a atom * 'b atom -> ('a * 'b) atom
-  | Opt    : 'a atom -> 'a option atom
-  | List   : 'sep const option * 'a atom -> 'a list atom
+val seq     : 'a t -> 'b t -> ('a * 'b) t
+val option  : 'a t -> 'a option t
+val list    : ?sep:('a t * 'a) -> 'b t -> 'b list t
 
-val beint16 : int    atom
-val beint32 : int32  atom
-val beint64 : int64  atom
-val leint16 : int    atom
-val leint32 : int32  atom
-val leint64 : int64  atom
-val string  : string atom
-val seq     : 'a atom -> 'b atom -> ('a * 'b) atom
-val bool    : bool   atom
-val char    : char   atom
-val option  : 'a atom -> 'a option atom
-val list    : 's const option -> 'a atom -> 'a list atom
+val comap   : 'a t -> ('b -> 'a) -> 'b t
 
-module Const :
-sig
-  val char      : char -> char const
+(** Operations on slices *)
 
-  val string    : ?off:int -> ?len:int -> string -> String.t const
-  val bytes     : ?off:int -> ?len:int -> Bytes.t -> Bytes.t const
-  val bigstring : ?off:int -> ?len:int -> Faraday.bigstring -> Faraday.bigstring const
-end
+type 'a sub = Faraday.t -> ?off:int -> ?len:int -> 'a -> unit
 
-module Schedule :
-sig
-  val string    : String.t sched
-  val bytes     : Bytes.t sched
-  val bigstring : Faraday.bigstring sched
-end
+val substring : string sub
+val subbytes : bytes sub
+val subbigstring : Faraday.bigstring sub
 
-type ('ty, 'v, 'cty, 'cv) list =
-  | Nil       : ('v, 'v, 'cv, 'cv) list
-  | Close     : (unit, unit, 'cv, 'cv) list
-  | Yield     : ('v, 'v, 'cv, 'cv) list
-  | Const     :
-       'a const
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, 'cty, 'cv) list
-  | Direct    :
-       'a atom
-    *  ('ty,       'v, 'cty, 'cv) list
-    -> ('a -> 'ty, 'v, 'cty, 'cv) list
-  | Sched     :
-       'a sched
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> (vec -> 'a -> 'ty, 'v, 'cty, 'cv) list
-  | Blitter   :
-       'a atom
-    *  ('ty,              'v,                 'cty, 'cv) list
-    -> (vec option -> 'a -> 'ty, 'v, 'a Blitter.t -> 'cty, 'cv) list
-  | Flush     :
-       (unit -> unit)
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, 'cty, 'cv) list
-  | App       :
-       (Faraday.t -> 'a -> unit)
-    *  ('ty, 'v, 'cty, 'cv) list
-    -> ('a -> 'ty, 'v, 'cty, 'cv) list
+val whole : 'a sub -> 'a t
 
-type ('ty, 'v, 'final, 'cty, 'cv) ty
+type vec = { off : int option ; len : int option }
+val sub : 'a sub -> (vec * 'a) t
 
-type ('ty, 'v, 'cty, 'cv) t =
-  ('ty, 'v, 'cty, 'cv, 'cv) ty
-  constraint 'cv = _ ty
+(** Formatters *)
 
-val concat :
-     ('ty, 'v, 'cty, 'cv) list
-  -> ( 'v, 'r,  'cv, 'cr) list
-  -> ('ty, 'r, 'cty, 'cr) list
+type ('ty, 'v) order
+type ('ty, 'v) fmt =
+  | [] : ('v, 'v) fmt
+  | (::) :
+       ('ty, 'v) order
+     * ( 'v, 'r) fmt
+    -> ('ty, 'r) fmt
 
-val nil   : ('v, 'v, 'cv, 'cv) list
-val close : (unit, unit, 'cv, 'cv) list
-val yield : ('v, 'v, 'cv, 'cv) list
+val atom : 'a t -> ('a -> 'v, 'v) order
+val subatom : 'a sub -> (vec -> 'a -> 'v, 'v) order
+val (!!) : 'a t -> ('a -> 'v, 'v) order
+val (!^) : 'a sub -> (vec -> 'a -> 'v, 'v) order
 
-module Infix :
-sig
-  val ( ** )  :
-       'a const
-    -> ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, 'cty, 'cv) list
-  val ( **! ) :
-       'a atom
-    -> ('ty, 'v, 'cty, 'cv) list
-    -> ('a -> 'ty, 'v, 'cty, 'cv) list
-  val ( **~ ) :
-       'a sched
-    -> ('ty, 'v, 'cty, 'cv) list
-    -> (vec -> 'a -> 'ty, 'v, 'cty, 'cv) list
-  val ( **? ) :
-       'a atom
-    -> ('ty, 'v, 'cty, 'cv) list
-    -> (vec option -> 'a -> 'ty, 'v, 'a Blitter.t -> 'cty, 'cv) list
-  val ( **| ) :
-       (unit -> unit)
-    -> ('ty, 'v, 'cty, 'cv) list
-    -> ('ty, 'v, 'cty, 'cv) list
-  val ( **= ) :
-       (Faraday.t -> 'a -> unit)
-    -> ('ty, 'v, 'cty, 'cv) list
-    -> ('a -> 'ty, 'v, 'cty, 'cv) list
-  val ( @@ )  :
-       ('ty, 'v, 'cty, 'cv) list
-    -> ( 'v, 'r,  'cv, 'cr) list
-    -> ('ty, 'r, 'cty, 'cr) list
-end
-
-val add_const :
-     'a const
-  -> ('ty, 'v, 'cty, 'cv) list
-  -> ('ty, 'v, 'cty, 'cv) list
-
-val add_direct :
-     'a atom
-  -> ('ty, 'v, 'cty, 'cv) list
-  -> ('a -> 'ty, 'v, 'cty, 'cv) list
-
-val add_sched :
-     'a sched
-  -> ('ty, 'v, 'cty, 'cv) list
-  -> (vec -> 'a -> 'ty, 'v, 'cty, 'cv) list
-
-val add_blitter :
-     'a atom
-  -> ('ty, 'v, 'cty, 'cv) list
-  -> (vec option -> 'a -> 'ty, 'v, 'a Blitter.t -> 'cty, 'cv) list
-
-val flush :
-     (unit -> unit)
-  -> ('ty, 'v, 'cty, 'cv) list
-  -> ('ty, 'v, 'cty, 'cv) list
-
-val add_app     :
-     (Faraday.t -> 'a -> unit)
-  -> ('ty, 'v, 'cty, 'cv) list
-  -> ('a -> 'ty, 'v, 'cty, 'cv) list
-
-val finalize :
-  ('ty, 'v, [ `NotF ], 'cty,
-   ('ty, 'v, [ `F ], _) t) ty -> 'cty
-
-val make     :
-     ('ty, 'v, 'cty, 'cv) list
-  -> ('ty, 'v, [ `NotF ], 'cty, 'cv) ty
+val concat : ('ty, 'v) fmt -> ( 'v, 'r) fmt -> ('ty, 'r) fmt
+val yield : ('v, 'v) order
+val flush : (unit -> unit) -> ('v, 'v) order
 
 val keval :
      Faraday.t
-  -> ('ty, 'v, _, _) t
+  -> ('ty, 'v) fmt
   -> (Faraday.t -> 'v)
   -> 'ty
 
 val eval  :
      Faraday.t
-  -> ('ty, unit, _, _) t
+  -> ('ty, unit) fmt
   -> 'ty
+
+(** Constants *)
+
+val const : 'a t -> 'a -> ('a, 'a) order
+val ($) : 'a t -> 'a -> ('a, 'a) order
+
+module Const :
+sig
+  val char      : char -> ('a,'a) order
+  val string    : ?off:int -> ?len:int -> string -> ('a,'a) order
+  val bytes     : ?off:int -> ?len:int -> Bytes.t -> ('a,'a) order
+  val bigstring : ?off:int -> ?len:int -> Faraday.bigstring -> ('a,'a) order
+end
+
+module Sched :
+sig
+  val string    : (vec -> String.t -> 'a, 'a) order
+  val bytes     : (vec -> Bytes.t -> 'a, 'a) order
+  val bigstring : (vec -> Faraday.bigstring -> 'a, 'a) order
+end
