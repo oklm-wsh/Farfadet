@@ -6,5 +6,5 @@ script: bash -ex .travis-opam.sh
 sudo: true
 env:
   matrix:
-  - PACKAGE="farfadet" OCAML_VERSION=4.02 TESTS=true \
+  - PACKAGE="farfadet" OCAML_VERSION=4.03 TESTS=true \
     PINS="faraday:https://github.com/inhabitedtype/faraday.git"
