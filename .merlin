@@ -1,4 +1,4 @@
 S lib
 B _build/lib
 
-PKG faraday
+PKG faraday ezjsonm

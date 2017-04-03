@@ -1,7 +1,6 @@
 true: safe_string, bin_annot, debug
+true: package(faraday)
 # <*/*>: warn_error(+1..49), warn(A-4-41-44)
 
+<test/*>: package(ezjsonm)
 <lib>: include
-<lib/*>: package(faraday)
-
-true: keep_locs
