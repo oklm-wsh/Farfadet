@@ -18,6 +18,8 @@ depends: [
   "ocamlfind"      {build}
   "topkg"          {build}
   "faraday"
+  "alcotest"       {test}
+  "ezjsonm"        {test}
 ]
 
-available: [ocaml-version >= "4.02.0"]
+available: [ocaml-version >= "4.03.0"]
