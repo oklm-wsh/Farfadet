@@ -1,4 +1,3 @@
-
 type vec = { off : int option ; len : int option }
 
 type 'a t = Faraday.t -> 'a -> unit
@@ -12,13 +11,13 @@ type ('ty, 'v) order =
   | Atom      :
        'a t
     -> ('a -> 'v, 'v) order
-  | SubAtom      :
+  | SubAtom   :
        'a sub
     -> (vec -> 'a -> 'v, 'v) order
   | Flush     :
        (unit -> unit)
     -> ('v, 'v) order
-  | Param       :
+  | Param     :
        ('a t -> 'a -> 'v, 'v) order
 
 and ('ty, 'v) fmt =
@@ -30,7 +29,7 @@ and ('ty, 'v) fmt =
 
 (** Predefined farfadets *)
 
-let int8 : _ t = Faraday.write_uint8
+let int8    : _ t = Faraday.write_uint8
 let beint16 : _ t = Faraday.BE.write_uint16
 let beint32 : _ t = Faraday.BE.write_uint32
 let beint64 : _ t = Faraday.BE.write_uint64
@@ -38,20 +37,20 @@ let leint16 : _ t = Faraday.LE.write_uint16
 let leint32 : _ t = Faraday.LE.write_uint32
 let leint64 : _ t = Faraday.LE.write_uint64
 let char    : _ t = Faraday.write_char
-let bool : _ t = fun encoder -> function
+let bool    : _ t = fun encoder -> function
   | true  -> char encoder '1'
   | false -> char encoder '0'
 
-let substring : _ sub = Faraday.write_string
-let subbytes : _ sub = Faraday.write_bytes
-let subbigstring : _ sub = Faraday.write_bigstring
+let substring           : _ sub = Faraday.write_string
+let subbytes            : _ sub = Faraday.write_bytes
+let subbigstring        : _ sub = Faraday.write_bigstring
 let blitter length blit : _ sub = Faraday.write_gen ~length ~blit
 
 let whole (a : _ sub) : _ t = a ?off:None ?len:None
-let sub (a : _ sub) : _ t = fun encoder ({off; len}, x) -> a ?off ?len encoder x
+let sub (a : _ sub)   : _ t = fun encoder ({off; len}, x) -> a ?off ?len encoder x
 
-let string = whole substring
-let bytes = whole subbytes
+let string    = whole substring
+let bytes     = whole subbytes
 let bigstring = whole subbigstring
 
 let seq f g : _ t = fun encoder (x,y) -> f encoder x; g encoder y
@@ -78,32 +77,33 @@ let option f : _ t =
 
 let comap a f : _ t = fun encoder x -> a encoder (f x)
 
-
-let atom f = Atom f
+let atom f    = Atom f
 let subatom f = SubAtom f
-let (!!) = atom
-let (!^) = subatom
+let (!!)      = atom
+let (!^)      = subatom
+
+(** Scheduled *)
 
 module Sched = struct
-  let string = SubAtom Faraday.schedule_string
-  let bytes = SubAtom Faraday.schedule_bytes
+  let string    = SubAtom Faraday.schedule_string
+  let bytes     = SubAtom Faraday.schedule_bytes
   let bigstring = SubAtom Faraday.schedule_bigstring
 end
 
 (** Constants *)
 
-let const a x = Const (a,x)
+let const a x          = Const (a,x)
 let csub a ?off ?len x = Const ((fun e x -> a e ?off ?len x), x)
-let ($) = const
+let ($)                = const
 
 module Const = struct
-  let char s = const char s
+  let char s                = const char s
   let string    ?off ?len x = csub substring ?off ?len x
   let bytes     ?off ?len x = csub subbytes ?off ?len x
   let bigstring ?off ?len x = csub subbigstring ?off ?len x
 end
 
-let yield = Yield
+let yield   = Yield
 let flush f = Flush f
 
 let rec concat
@@ -157,5 +157,5 @@ let rec keval
 
 let eval encoder fmt = keval encoder fmt (fun x -> ())
 
-
-let p e = eval e [ string$"foo" ; Sched.bigstring ; !!beint32 ]
+let p e = eval e [ string $ "foo" ; Sched.bigstring ; !!beint32 ; yield ]
+let p e = eval e [ string $ "foo" ]
