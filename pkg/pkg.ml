@@ -17,4 +17,5 @@ let () =
   Ok [ Pkg.lib "pkg/META"
      ; Pkg.doc "README.md"
      ; Pkg.doc "CHANGES.md"
-     ; Pkg.lib ~cond:faraday ~exts:Exts.module_library "lib/farfadet" ]
+     ; Pkg.lib ~cond:faraday ~exts:Exts.module_library "lib/farfadet"
+     ; Pkg.test "test/test" ]

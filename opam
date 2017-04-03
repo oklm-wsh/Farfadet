@@ -8,9 +8,9 @@ bug-reports:  "https://github.com/oklm-wsh/Farfadet/issues"
 dev-repo:     "https://github.com/oklm-wsh/Farfadet.git"
 license:      "MIT"
 
-build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" pinned ]
+build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ]
 
-build-test: [ [ "ocaml" "pkg/pkg.ml" "build" "--pinned" pinned "--tests" "true" ]
+build-test: [ [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
               [ "ocaml" "pkg/pkg.ml" "test" ] ]
 
 depends: [
