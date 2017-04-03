@@ -1,4 +1,7 @@
 S lib
-B _build/lib
+S test
 
-PKG faraday ezjsonm
+B _build/lib
+B _build/test
+
+PKG faraday ezjsonm alcotest
