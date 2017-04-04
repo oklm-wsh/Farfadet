@@ -6,6 +6,9 @@ let memcpy s soff d doff len =
   for i = 0 to len - 1
   do Bigarray.Array1.set d (doff + i) (String.get s (soff + i)) done
 
+(* XXX(dinosaure): this code is WRONG. It's just a test and we don't care if we
+                   respect the standard. Don't copy/paste. *)
+
 let rec value : Ezjsonm.value Farfadet.t = fun e x ->
   let open Farfadet in
 
