@@ -7,7 +7,7 @@
 open Topkg
 
 let faraday = Conf.with_pkg "faraday"
-let opam = Pkg.opam_file ~lint_deps_excluding:None "opam"
+let opam = Pkg.opam_file ~lint_deps_excluding:(Some [ "ocamlbuild"; "topkg"; "ocaml"; "ocamlfind" ]) "opam"
 
 let () =
   Pkg.describe ~opams:[opam] "farfadet" @@ fun c ->
