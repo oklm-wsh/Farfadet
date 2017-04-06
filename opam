@@ -6,6 +6,7 @@ authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
 homepage:     "https://github.com/oklm-wsh/Farfadet"
 bug-reports:  "https://github.com/oklm-wsh/Farfadet/issues"
 dev-repo:     "https://github.com/oklm-wsh/Farfadet.git"
+doc:          "https://oklm-wsh.github.io/Farfadet/"
 license:      "MIT"
 
 build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ]
