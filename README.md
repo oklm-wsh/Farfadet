@@ -9,8 +9,8 @@ opam pin add farfadet https://github.com/oklm-wsh/Farfadet.git
 ## Quick look
 
 Firstly, you need to understand what
-is [Faraday](https://github.com/inhabitedtype/faraday). Then, you can serialize
-something like a this data:
+[Faraday](https://github.com/inhabitedtype/faraday) is. Then, you can serialize
+something like this data:
 
 ```ocaml
 type t = 
@@ -22,7 +22,7 @@ type t =
   | `O of (string * t) list ]
 ```
 
-You can write something with Faraday, like that:
+You could write an encoder function with Faraday, like this:
 
 ```ocaml
 let rec write_json enc = function
@@ -42,8 +42,10 @@ let rec write_json enc = function
     Faraday.write_char enc ']'
 ```
 
-And it's boring ... Yes. So, `Farfadet` can help you to write a serializer in a
-type safe way. This is an example:
+And it's boring... Yes.
+
+So, `Farfadet` can help you to write a serializer in a type-safe way.
+This is an example:
 
 ```ocaml
 let comma =
@@ -62,14 +64,14 @@ let rec value : t Farfadet.t = fun e x ->
   | `A lst -> eval e [ char $ '['; !!arr; char $ ']'] lst
 ```
 
-It's much better. And it's like a `printf` function in OCaml with a little
-overhead to facilite the serialization of any data with a `Faraday` backend. And
+Much better. And it's like a `printf` function in OCaml with a little
+overhead to facilitate the serialization of any data with a `Faraday` backend. And
 you can do more.
 
 Another example is to use a `memcpy` implementation instead a `memmove`
 implementation (provided by the standard library).
 
-In fact, you can create your *blitter* and use it inside [Faraday] like:
+In fact, you can create your *blitter* and use it inside `Faraday` like:
 
 ```ocaml
 let memcpy s soff d doff len =
@@ -80,7 +82,8 @@ let string' : string Farfadet.t = fun e -> eval e [ !!(whole @@ blitter String.l
 ```
 
 You can see the documentation to understand this snippet. A good example is
-provided in the test to serialize a [Ezjsonm.t] value.
+provided in the [test to serialize a `Ezjsonm.t`
+value](https://github.com/oklm-wsh/Farfadet/blob/master/test/test.ml).
 
 ## Build Requirements
 
