@@ -85,8 +85,6 @@ let (!^)      = subatom
 (** Scheduled *)
 
 module Sched = struct
-  let string    = SubAtom Faraday.schedule_string
-  let bytes     = SubAtom Faraday.schedule_bytes
   let bigstring = SubAtom Faraday.schedule_bigstring
 end
 
@@ -156,6 +154,3 @@ let rec keval
       keval_order encoder o k'
 
 let eval encoder fmt = keval encoder fmt (fun x -> ())
-
-let p e = eval e [ string $ "foo" ; Sched.bigstring ; !!beint32 ; yield ]
-let p e = eval e [ string $ "foo" ]

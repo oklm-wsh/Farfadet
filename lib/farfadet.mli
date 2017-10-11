@@ -139,10 +139,6 @@ end
 
 module Sched :
 sig
-  val string    : (vec -> String.t -> 'a, 'a) order
-  (** Schedule a [string]. *)
-  val bytes     : (vec -> Bytes.t -> 'a, 'a) order
-  (** Schedulre a [Bytes.t]. *)
   val bigstring : (vec -> Faraday.bigstring -> 'a, 'a) order
   (** Schedule a [Faraday.bigstring]. *)
 end
