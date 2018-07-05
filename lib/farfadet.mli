@@ -56,7 +56,7 @@ val subbytes     : bytes sub
 (** Writer of a sub-[Bytes.t]. *)
 val subbigstring : Faraday.bigstring sub
 (** Writer of a sub-[Faraday.bigstring]. *)
-val blitter      : ('a -> int) -> ('a -> int -> Faraday.bigstring -> int -> int -> unit) -> 'a sub
+val blitter      : ('a -> int) -> ('a -> src_off:int -> Faraday.bigstring -> dst_off:int -> len:int -> unit) -> 'a sub
 (** [blitter len blit] makes a new sub-writer which uses the specific [blit]
     function to {i blit} the value to the internal [Faraday.bigstring] and the
     specific [length] function to get the length of the value ['a] (used when
