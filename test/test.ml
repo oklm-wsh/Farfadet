@@ -2,9 +2,9 @@ let comma =
   let open Farfadet in
   (fun e () -> string e ","), ()
 
-let memcpy s soff d doff len =
+let memcpy s ~src_off d ~dst_off ~len =
   for i = 0 to len - 1
-  do Bigarray.Array1.set d (doff + i) (String.get s (soff + i)) done
+  do Bigarray.Array1.set d (dst_off + i) (String.get s (src_off + i)) done
 
 (* XXX(dinosaure): this code is WRONG. It's just a test and we don't care if we
                    respect the standard. Don't copy/paste. *)
