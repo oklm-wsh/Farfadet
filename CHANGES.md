@@ -1,4 +1,4 @@
-v0.2 2018-05-07 Paris (France)
+v0.3 2018-05-07 Paris (France)
 --------------------------------------
 
 - Move on the new interface of `faraday.0.6.0`
