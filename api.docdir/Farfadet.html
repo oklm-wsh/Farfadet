@@ -3,6 +3,7 @@
 <head>
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
@@ -15,117 +16,161 @@
 &nbsp;</div>
 <h1>Module <a href="type_Farfadet.html">Farfadet</a></h1>
 
-<pre><span class="keyword">module</span> Farfadet: <code class="code"><span class="keyword">sig</span></code> <a href="Farfadet.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-Farfadet module.<br>
+<pre><span id="MODULEFarfadet"><span class="keyword">module</span> Farfadet</span>: <code class="code"><span class="keyword">sig</span></code> <a href="Farfadet.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+<div class="info-desc">
+<p>Farfadet module.</p>
+</div>
 </div>
 <hr width="100%">
 
 <pre><span id="TYPEt"><span class="keyword">type</span> <code class="type">'a</code> t</span> = <code class="type">Faraday.t -> 'a -> unit</code> </pre>
 <div class="info ">
-A <i>writer</i>. It's a function which takes the Faraday's encoder, a value
-   <code class="code"><span class="keywordsign">'</span>a</code> and write the value in the encoder.<br>
+<div class="info-desc">
+<p>A <i>writer</i>. It's a function which takes the Faraday's encoder, a value
+   <code class="code"><span class="keywordsign">'</span>a</code> and write the value in the encoder.</p>
+</div>
 </div>
 
 
 <pre><span id="VALbeint16"><span class="keyword">val</span> beint16</span> : <code class="type">int <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a 16-bits integer in big-endian order.<br>
+<div class="info-desc">
+<p>Writer of a 16-bits integer in big-endian order.</p>
+</div>
 </div>
 
 <pre><span id="VALbeint32"><span class="keyword">val</span> beint32</span> : <code class="type">int32 <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a 32-bits integer in big-endian order.<br>
+<div class="info-desc">
+<p>Writer of a 32-bits integer in big-endian order.</p>
+</div>
 </div>
 
 <pre><span id="VALbeint64"><span class="keyword">val</span> beint64</span> : <code class="type">int64 <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a 64-bits integer in big-endian order.<br>
+<div class="info-desc">
+<p>Writer of a 64-bits integer in big-endian order.</p>
+</div>
 </div>
 
 <pre><span id="VALleint16"><span class="keyword">val</span> leint16</span> : <code class="type">int <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a 16-bits integer in little-endian order.<br>
+<div class="info-desc">
+<p>Writer of a 16-bits integer in little-endian order.</p>
+</div>
 </div>
 
 <pre><span id="VALleint32"><span class="keyword">val</span> leint32</span> : <code class="type">int32 <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a 32-bits integer in little-endian order.<br>
+<div class="info-desc">
+<p>Writer of a 32-bits integer in little-endian order.</p>
+</div>
 </div>
 
 <pre><span id="VALleint64"><span class="keyword">val</span> leint64</span> : <code class="type">int64 <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a 64-bits integer in little-endian order.<br>
+<div class="info-desc">
+<p>Writer of a 64-bits integer in little-endian order.</p>
+</div>
 </div>
 
 <pre><span id="VALstring"><span class="keyword">val</span> string</span> : <code class="type">string <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a <code class="code">string</code>.<br>
+<div class="info-desc">
+<p>Writer of a <code class="code">string</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALbytes"><span class="keyword">val</span> bytes</span> : <code class="type">Bytes.t <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a <code class="code"><span class="constructor">Bytes</span>.t</code>.<br>
+<div class="info-desc">
+<p>Writer of a <code class="code"><span class="constructor">Bytes</span>.t</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALbigstring"><span class="keyword">val</span> bigstring</span> : <code class="type">Faraday.bigstring <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a <code class="code"><span class="constructor">Faraday</span>.bigstring</code>.<br>
+<div class="info-desc">
+<p>Writer of a <code class="code"><span class="constructor">Faraday</span>.bigstring</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALbool"><span class="keyword">val</span> bool</span> : <code class="type">bool <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a <code class="code">bool</code>. If the value is <code class="code"><span class="keyword">true</span></code>, the writer writes <code class="code"><span class="string">'1'</span></code>,
-    otherwise, it writes <code class="code"><span class="string">'0'</span></code>.<br>
+<div class="info-desc">
+<p>Writer of a <code class="code">bool</code>. If the value is <code class="code"><span class="keyword">true</span></code>, the writer writes <code class="code"><span class="string">'1'</span></code>,
+    otherwise, it writes <code class="code"><span class="string">'0'</span></code>.</p>
+</div>
 </div>
 
 <pre><span id="VALchar"><span class="keyword">val</span> char</span> : <code class="type">char <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Writer of a <code class="code">char</code>.<br>
+<div class="info-desc">
+<p>Writer of a <code class="code">char</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALseq"><span class="keyword">val</span> seq</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> 'b <a href="Farfadet.html#TYPEt">t</a> -> ('a * 'b) <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-<code class="code">seq a b</code> composes 2 writers to one. It writes <code class="code">a</code>, then <code class="code">b</code>.<br>
+<div class="info-desc">
+<p><code class="code">seq&nbsp;a&nbsp;b</code> composes 2 writers to one. It writes <code class="code">a</code>, then <code class="code">b</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALoption"><span class="keyword">val</span> option</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> 'a option <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-<code class="code">option a</code> makes a new writer and expects an option value. If the valus is
-    <code class="code"><span class="constructor">None</span></code>, nothing happens. Otherwise, we call the writer <code class="code">a</code>.<br>
+<div class="info-desc">
+<p><code class="code">option&nbsp;a</code> makes a new writer and expects an option value. If the valus is
+    <code class="code"><span class="constructor">None</span></code>, nothing happens. Otherwise, we call the writer <code class="code">a</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALlist"><span class="keyword">val</span> list</span> : <code class="type">?sep:'a <a href="Farfadet.html#TYPEt">t</a> * 'a -> 'b <a href="Farfadet.html#TYPEt">t</a> -> 'b list <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-<code class="code">list ~sep a</code> makes a new writer and expects a list of value (which have the
-    type <code class="code">a</code>). <code class="code">list ~sep a</code> writes each value with the writer <code class="code">a</code> interspersed
-    by the writer <code class="code">sep</code>.<br>
+<div class="info-desc">
+<p><code class="code">list&nbsp;~sep&nbsp;a</code> makes a new writer and expects a list of value (which have the
+    type <code class="code">a</code>). <code class="code">list&nbsp;~sep&nbsp;a</code> writes each value with the writer <code class="code">a</code> interspersed
+    by the writer <code class="code">sep</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALcomap"><span class="keyword">val</span> comap</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> ('b -> 'a) -> 'b <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-<code class="code">comap a f</code> makes a writer which runs <code class="code">f</code> with the value and pass its
-    results to <code class="code">a</code>.<br>
+<div class="info-desc">
+<p><code class="code">comap&nbsp;a&nbsp;f</code> makes a writer which runs <code class="code">f</code> with the value and pass its
+    results to <code class="code">a</code>.</p>
 </div>
-<br>
-Operations on slices<br>
+</div>
+<p>Operations on slices</p>
 
 <pre><span id="TYPEsub"><span class="keyword">type</span> <code class="type">'a</code> sub</span> = <code class="type">Faraday.t -> ?off:int -> ?len:int -> 'a -> unit</code> </pre>
 <div class="info ">
-A sub-<i>writer</i> with optional arguments <code class="code">off</code> and <code class="code">len</code> to specify which
-    slice need to be written.<br>
+<div class="info-desc">
+<p>A sub-<i>writer</i> with optional arguments <code class="code">off</code> and <code class="code">len</code> to specify which
+    slice need to be written.</p>
+</div>
 </div>
 
 
 <pre><span id="VALsubstring"><span class="keyword">val</span> substring</span> : <code class="type">string <a href="Farfadet.html#TYPEsub">sub</a></code></pre><div class="info ">
-Writer of a sub-<code class="code">string</code>.<br>
+<div class="info-desc">
+<p>Writer of a sub-<code class="code">string</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALsubbytes"><span class="keyword">val</span> subbytes</span> : <code class="type">bytes <a href="Farfadet.html#TYPEsub">sub</a></code></pre><div class="info ">
-Writer of a sub-<code class="code"><span class="constructor">Bytes</span>.t</code>.<br>
+<div class="info-desc">
+<p>Writer of a sub-<code class="code"><span class="constructor">Bytes</span>.t</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALsubbigstring"><span class="keyword">val</span> subbigstring</span> : <code class="type">Faraday.bigstring <a href="Farfadet.html#TYPEsub">sub</a></code></pre><div class="info ">
-Writer of a sub-<code class="code"><span class="constructor">Faraday</span>.bigstring</code>.<br>
+<div class="info-desc">
+<p>Writer of a sub-<code class="code"><span class="constructor">Faraday</span>.bigstring</code>.</p>
+</div>
 </div>
 
-<pre><span id="VALblitter"><span class="keyword">val</span> blitter</span> : <code class="type">('a -> int) -><br>       ('a -> int -> Faraday.bigstring -> int -> int -> unit) -> 'a <a href="Farfadet.html#TYPEsub">sub</a></code></pre><div class="info ">
-<code class="code">blitter len blit</code> makes a new sub-writer which uses the specific <code class="code">blit</code>
+<pre><span id="VALblitter"><span class="keyword">val</span> blitter</span> : <code class="type">('a -> int) -><br>       ('a -> src_off:int -> Faraday.bigstring -> dst_off:int -> len:int -> unit) -><br>       'a <a href="Farfadet.html#TYPEsub">sub</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">blitter&nbsp;len&nbsp;blit</code> makes a new sub-writer which uses the specific <code class="code">blit</code>
     function to <i>blit</i> the value to the internal <code class="code"><span class="constructor">Faraday</span>.bigstring</code> and the
     specific <code class="code">length</code> function to get the length of the value <code class="code"><span class="keywordsign">'</span>a</code> (used when
-    the optional argument <code class="code">len = <span class="constructor">None</span></code>).
-<p>
+    the optional argument <code class="code">len&nbsp;=&nbsp;<span class="constructor">None</span></code>).</p>
 
-    eg. If you want to use a <code class="code">memcpy</code> implementation instead a standalone
-    <code class="code">memmove</code> implementation.<br>
+<p>eg. If you want to use a <code class="code">memcpy</code> implementation instead a standalone
+    <code class="code">memmove</code> implementation.</p>
+</div>
 </div>
 
 <pre><span id="VALwhole"><span class="keyword">val</span> whole</span> : <code class="type">'a <a href="Farfadet.html#TYPEsub">sub</a> -> 'a <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-Erases the optional arguments <code class="code">off</code> and <code class="code">len</code> from a <a href="Farfadet.html#VALsub"><code class="code"><span class="constructor">Farfadet</span>.sub</code></a> writer by <code class="code"><span class="constructor">None</span></code>.<br>
+<div class="info-desc">
+<p>Erases the optional arguments <code class="code">off</code> and <code class="code">len</code> from a <a href="Farfadet.html#VALsub"><code class="code"><span class="constructor">Farfadet</span>.sub</code></a> writer by <code class="code"><span class="constructor">None</span></code>.</p>
+</div>
 </div>
 
 <pre><code><span id="TYPEvec"><span class="keyword">type</span> <code class="type"></code>vec</span> = {</code></pre><table class="typetable">
@@ -146,20 +191,25 @@ Erases the optional arguments <code class="code">off</code> and <code class="cod
 }
 
 <div class="info ">
-A record which contains the optional values <code class="code">off</code> and <code class="code">len</code>.<br>
+<div class="info-desc">
+<p>A record which contains the optional values <code class="code">off</code> and <code class="code">len</code>.</p>
+</div>
 </div>
 
 
 <pre><span id="VALsub"><span class="keyword">val</span> sub</span> : <code class="type">'a <a href="Farfadet.html#TYPEsub">sub</a> -> (<a href="Farfadet.html#TYPEvec">vec</a> * 'a) <a href="Farfadet.html#TYPEt">t</a></code></pre><div class="info ">
-<code class="code">sub a</code> makes a new writer from a <a href="Farfadet.html#VALsub"><code class="code"><span class="constructor">Farfadet</span>.sub</code></a>-writer which expect a <a href="Farfadet.html#TYPEvec"><code class="code"><span class="constructor">Farfadet</span>.vec</code></a> to
-    specify the optional arguments <code class="code">off</code> and <code class="code">len</code>.<br>
+<div class="info-desc">
+<p><code class="code">sub&nbsp;a</code> makes a new writer from a <a href="Farfadet.html#VALsub"><code class="code"><span class="constructor">Farfadet</span>.sub</code></a>-writer which expect a <a href="Farfadet.html#TYPEvec"><code class="code"><span class="constructor">Farfadet</span>.vec</code></a> to
+    specify the optional arguments <code class="code">off</code> and <code class="code">len</code>.</p>
 </div>
-<br>
-Formatters<br>
+</div>
+<p>Formatters</p>
 
 <pre><span id="TYPEorder"><span class="keyword">type</span> <code class="type">('ty, 'v)</code> order</span> </pre>
 <div class="info ">
-Representation of the action applied to the Faraday's encoder.<br>
+<div class="info-desc">
+<p>Representation of the action applied to the Faraday's encoder.</p>
+</div>
 </div>
 
 
@@ -182,49 +232,65 @@ Representation of the action applied to the Faraday's encoder.<br>
 
 
 <pre><span id="VALatom"><span class="keyword">val</span> atom</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> ('a -> 'v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-<code class="code">atom writer</code> makes a new <a href="Farfadet.html#TYPEorder"><code class="code"><span class="constructor">Farfadet</span>.order</code></a> to apply the <code class="code">writer</code> to the Faraday's
-    encoder.<br>
+<div class="info-desc">
+<p><code class="code">atom&nbsp;writer</code> makes a new <a href="Farfadet.html#TYPEorder"><code class="code"><span class="constructor">Farfadet</span>.order</code></a> to apply the <code class="code">writer</code> to the Faraday's
+    encoder.</p>
+</div>
 </div>
 
 <pre><span id="VALsubatom"><span class="keyword">val</span> subatom</span> : <code class="type">'a <a href="Farfadet.html#TYPEsub">sub</a> -> (<a href="Farfadet.html#TYPEvec">vec</a> -> 'a -> 'v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-<code class="code">subatom subwriter</code> makes a new <a href="Farfadet.html#TYPEorder"><code class="code"><span class="constructor">Farfadet</span>.order</code></a> to apply the <code class="code">subwriter</code> to the
-    Faraday's encoder.<br>
+<div class="info-desc">
+<p><code class="code">subatom&nbsp;subwriter</code> makes a new <a href="Farfadet.html#TYPEorder"><code class="code"><span class="constructor">Farfadet</span>.order</code></a> to apply the <code class="code">subwriter</code> to the
+    Faraday's encoder.</p>
+</div>
 </div>
 
 <pre><span id="VAL(!!)"><span class="keyword">val</span> (!!)</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> ('a -> 'v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-Prefix operator of <a href="Farfadet.html#VALatom"><code class="code"><span class="constructor">Farfadet</span>.atom</code></a>.<br>
+<div class="info-desc">
+<p>Prefix operator of <a href="Farfadet.html#VALatom"><code class="code"><span class="constructor">Farfadet</span>.atom</code></a>.</p>
+</div>
 </div>
 
 <pre><span id="VAL(!^)"><span class="keyword">val</span> (!^)</span> : <code class="type">'a <a href="Farfadet.html#TYPEsub">sub</a> -> (<a href="Farfadet.html#TYPEvec">vec</a> -> 'a -> 'v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-Prefix operator of <a href="Farfadet.html#VALsubatom"><code class="code"><span class="constructor">Farfadet</span>.subatom</code></a>.<br>
+<div class="info-desc">
+<p>Prefix operator of <a href="Farfadet.html#VALsubatom"><code class="code"><span class="constructor">Farfadet</span>.subatom</code></a>.</p>
+</div>
 </div>
 
 <pre><span id="VALconcat"><span class="keyword">val</span> concat</span> : <code class="type">('ty, 'v) <a href="Farfadet.html#TYPEfmt">fmt</a> -> ('v, 'r) <a href="Farfadet.html#TYPEfmt">fmt</a> -> ('ty, 'r) <a href="Farfadet.html#TYPEfmt">fmt</a></code></pre><div class="info ">
-<code class="code">concat fmt1 fmt2</code> concats <code class="code">fmt1</code> with <code class="code">fmt2</code>.<br>
+<div class="info-desc">
+<p><code class="code">concat&nbsp;fmt1&nbsp;fmt2</code> concats <code class="code">fmt1</code> with <code class="code">fmt2</code>.</p>
+</div>
 </div>
 
 <pre><span id="VALyield"><span class="keyword">val</span> yield</span> : <code class="type">('v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-<code class="code">yield</code> orders a <code class="code"><span class="constructor">Faraday</span>.yield</code> operations to the Faraday's encoder.<br>
+<div class="info-desc">
+<p><code class="code">yield</code> orders a <code class="code"><span class="constructor">Faraday</span>.yield</code> operations to the Faraday's encoder.</p>
+</div>
 </div>
 
 <pre><span id="VALflush"><span class="keyword">val</span> flush</span> : <code class="type">(unit -> unit) -> ('v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-<code class="code">flush f</code> registers <code class="code">f</code> to be called when all prior writes have been
-    successfully completed to the Faraday's encoder.<br>
+<div class="info-desc">
+<p><code class="code">flush&nbsp;f</code> registers <code class="code">f</code> to be called when all prior writes have been
+    successfully completed to the Faraday's encoder.</p>
+</div>
 </div>
 
 <pre><span id="VALkeval"><span class="keyword">val</span> keval</span> : <code class="type">Faraday.t -> ('ty, 'v) <a href="Farfadet.html#TYPEfmt">fmt</a> -> (Faraday.t -> 'v) -> 'ty</code></pre>
-<pre><span id="VALeval"><span class="keyword">val</span> eval</span> : <code class="type">Faraday.t -> ('ty, unit) <a href="Farfadet.html#TYPEfmt">fmt</a> -> 'ty</code></pre><br>
-Constants<br>
+<pre><span id="VALeval"><span class="keyword">val</span> eval</span> : <code class="type">Faraday.t -> ('ty, unit) <a href="Farfadet.html#TYPEfmt">fmt</a> -> 'ty</code></pre><p>Constants</p>
 
 <pre><span id="VALconst"><span class="keyword">val</span> const</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> 'a -> ('v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-<code class="code">const kind value</code> calls the writer <code class="code">kind</code> with the value <code class="code">value</code> directly.<br>
+<div class="info-desc">
+<p><code class="code">const&nbsp;kind&nbsp;value</code> calls the writer <code class="code">kind</code> with the value <code class="code">value</code> directly.</p>
+</div>
 </div>
 
 <pre><span id="VAL($)"><span class="keyword">val</span> ($)</span> : <code class="type">'a <a href="Farfadet.html#TYPEt">t</a> -> 'a -> ('v, 'v) <a href="Farfadet.html#TYPEorder">order</a></code></pre><div class="info ">
-Infix operator of <a href="Farfadet.html#VALconst"><code class="code"><span class="constructor">Farfadet</span>.const</code></a>.<br>
+<div class="info-desc">
+<p>Infix operator of <a href="Farfadet.html#VALconst"><code class="code"><span class="constructor">Farfadet</span>.const</code></a>.</p>
 </div>
-<br>
-Conveniences operations<br>
+</div>
+<p>Conveniences operations</p>
 
-<pre><span class="keyword">module</span> <a href="Farfadet.Const.html">Const</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Farfadet.Const.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span class="keyword">module</span> <a href="Farfadet.Sched.html">Sched</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Farfadet.Sched.html">..</a> <code class="code"><span class="keyword">end</span></code></pre></body></html>
+<pre><span id="MODULEConst"><span class="keyword">module</span> <a href="Farfadet.Const.html">Const</a></span>: <code class="code"><span class="keyword">sig</span></code> <a href="Farfadet.Const.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span id="MODULESched"><span class="keyword">module</span> <a href="Farfadet.Sched.html">Sched</a></span>: <code class="code"><span class="keyword">sig</span></code> <a href="Farfadet.Sched.html">..</a> <code class="code"><span class="keyword">end</span></code></pre></body></html>
